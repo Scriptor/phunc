@@ -4,6 +4,15 @@
 
 (declare compile-expr)
 
+(def special-forms
+  #{:if})
+
+(defmulti compile-special-form
+  (fn [expr] (keyword (first expr))))
+
+(defn special-form? [expr]
+  (special-forms (keyword (first expr))))
+
 (defn compile-func-call [expr]
   (str (first expr) "(" (join ", " (map compile-expr (rest expr))) ")"))
 
@@ -17,7 +26,8 @@
 (defn compile-expr [expr]
   (let [compile-func
         (cond
-         (list? expr) compile-func-call
          (atom? expr) compile-php-atom
+         (special-form? expr) compile-special-form
+         (list? expr) compile-func-call
          (vector? expr) compile-array)]
     (compile-func expr)))
