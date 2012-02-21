@@ -11,9 +11,13 @@
   (let [dollar (if (symbol? expr) "$" "")]
     (str dollar expr)))
 
+(defn compile-array [expr]
+  (str "array(" (join ", " (map compile-expr expr)) ")"))
+
 (defn compile-expr [expr]
   (let [compile-func
-        (if (atom? expr)
-          compile-php-atom
-          compile-func-call)]
+        (cond
+         (list? expr) compile-func-call
+         (atom? expr) compile-php-atom
+         (vector? expr) compile-array)]
     (compile-func expr)))
