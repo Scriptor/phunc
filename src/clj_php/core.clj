@@ -10,6 +10,13 @@
 (defmulti compile-special-form
   (fn [expr] (keyword (first expr))))
 
+(defmethod compile-special-form :if [expr]
+  (str "if(" (compile-expr (second expr)) "){\n"
+       (compile-expr (nth expr 2))
+       "\n}else{\n"
+       (compile-expr (nth expr 3))
+       "\n}"))
+
 (defn special-form? [expr]
   (special-forms (keyword (first expr))))
 
