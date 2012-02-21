@@ -38,3 +38,6 @@
          (list? expr) compile-func-call
          (vector? expr) compile-array)]
     (compile-func expr)))
+
+(defn test [expr]
+  (print (compile-expr expr)))
