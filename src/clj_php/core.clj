@@ -3,7 +3,9 @@
         [clojure.string :only (join)]))
 
 (declare compile-expr)
+(declare compile-stmt)
 
+(def indent "    ")
 (def special-forms
   #{:if})
 
@@ -12,10 +14,10 @@
 
 (defmethod compile-special-form :if [expr]
   (str "if(" (compile-expr (second expr)) "){\n"
-       (compile-expr (nth expr 2))
-       "\n}else{\n"
-       (compile-expr (nth expr 3))
-       "\n}"))
+       (compile-stmt (nth expr 2))
+       "}else{\n"
+       (compile-stmt (nth expr 3))
+       "}"))
 
 (defn special-form? [expr]
   (special-forms (keyword (first expr))))
@@ -29,6 +31,9 @@
 
 (defn compile-array [expr]
   (str "array(" (join ", " (map compile-expr expr)) ")"))
+
+(defn compile-stmt [expr]
+  (str (compile-expr expr) ";\n"))
 
 (defn compile-expr [expr]
   (let [compile-func
