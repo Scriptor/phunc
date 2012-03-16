@@ -40,7 +40,7 @@
   (str (compile-expr (with-meta expr {:context :stmt})) ";\n"))
 
 (defn compile-expr [expr]
-  (let [expr (if (not (:context expr))
+  (let [expr (if (not (:context (meta expr)))
                (with-meta expr {:context :expr})
                expr)
         compile-func (cond
