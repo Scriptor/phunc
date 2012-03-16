@@ -10,7 +10,8 @@
   #{:if})
 
 (defmulti compile-special-form
-  (fn [expr] (keyword [(first expr) (:context (meta expr))])))
+  (fn [expr]
+    [(keyword (first expr)) (:context (meta expr))]))
 
 (defmethod compile-special-form [:if :stmt] [expr]
   (str "if(" (compile-expr (second expr)) "){\n"
@@ -18,6 +19,7 @@
        "}else{\n"
        (compile-stmt (nth expr 3))
        "}"))
+
 (defmethod compile-special-form [:if :expr] [[test if-expr else-expr]]
   (str (compile-expr if-expr) " ? " (compile-expr if-expr) " : " (compile-expr else-expr)))
 
